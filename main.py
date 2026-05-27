@@ -2,15 +2,26 @@
 # FstALP():-- api creator in backend
 from fastapi import FastAPI
 import mysql.connector
-import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
+#---CORS Policy---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 conn_obj = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Srivarsha@1234",
-    database="ExpenseTracker"
+    host=os.getenv("db_host"),
+    user=os.getenv("db_user"),
+    port=os.getenv("db_port"),
+    password=os.getenv("db_password"),
+    database=os.getenv("db_name")
 )
 
 cursor_obj = conn_obj.cursor()
