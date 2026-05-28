@@ -91,51 +91,30 @@ def view_expenses():
     return expenses
 
 # ---------------- UPDATE EXPENSE ----------------
+from fastapi import Form
+
 @app.put("/update_expense/{expense_id}")
 def update_expense(
     expense_id: int,
-    date: str,
-    category: str,
-    amount: float,
-    payment_method: str,
-    description: str
+    date: str = Form(...),
+    category: str = Form(...),
+    amount: float = Form(...),
+    payment_method: str = Form(...),
+    description: str = Form(...)
 ):
+
     query = """
     UPDATE expenses
-    SET
-        date = %s,
-        category = %s,
-        amount = %s,
-        payment_method = %s,
-        description = %s
-    WHERE expense_id = %s
+    SET date=%s, category=%s, amount=%s, payment_method=%s, description=%s
+    WHERE expense_id=%s
     """
-    values = (
-        date,
-        category,
-        amount,
-        payment_method,
-        description,
-        expense_id
-    )
+
+    values = (date, category, amount, payment_method, description, expense_id)
 
     cursor_obj.execute(query, values)
     conn_obj.commit()
-    return {
-        "message": "Expense updated successfully!"
-    }
 
-
-# ---------------- DELETE EXPENSE ----------------
-@app.delete("/delete_expense/{expense_id}")
-def delete_expense(expense_id: int):
-    query = "DELETE FROM expenses WHERE expense_id = %s"
-    cursor_obj.execute(query, (expense_id,))
-    conn_obj.commit()
-    return {
-        "message": "Expense deleted successfully!"
-    }
-
+    return {"message": "Expense updated successfully!"}
 # ---------------- SEARCH EXPENSES ----------------
 @app.get("/search_expenses")
 def search_expenses(category: str):
