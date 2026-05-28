@@ -115,6 +115,22 @@ def update_expense(
     conn_obj.commit()
 
     return {"message": "Expense updated successfully!"}
+
+# ---------------- DELETE EXPENSE ----------------
+@app.delete("/delete_expense/{expense_id}")
+def delete_expense(expense_id: int):
+
+    query = "DELETE FROM expenses WHERE expense_id = %s"
+    cursor_obj.execute(query, (expense_id,))
+    conn_obj.commit()
+    # check if anything was actually deleted
+    if cursor_obj.rowcount == 0:
+        return {
+            "message": "No expense found with this ID"
+        }
+    return {
+        "message": "Expense deleted successfully!"
+    }
 # ---------------- SEARCH EXPENSES ----------------
 @app.get("/search_expenses")
 def search_expenses(category: str):
