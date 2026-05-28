@@ -1,6 +1,6 @@
 # uvicorn :-- server name
 # FstALP():-- api creator in backend
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 import mysql.connector
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -52,29 +52,25 @@ def home():
 # ---------------- ADD EXPENSE ----------------
 @app.post("/add_expense")
 def add_expense(
-    date: str,
-    category: str,
-    amount: float,
-    payment_method: str,
-    description: str
+    date: str = Form(...),
+    category: str = Form(...),
+    amount: float = Form(...),
+    payment_method: str = Form(...),
+    description: str = Form(...)
 ):
-        query = """
-        INSERT INTO expenses
-        (date, category, amount, payment_method, description)
-        VALUES (%s, %s, %s, %s, %s)
-        """
-        values = (
-            date,
-            category,
-            amount,
-            payment_method,
-            description
-        )
-        cursor_obj.execute(query, values)
-        conn_obj.commit()
-        return {
-            "message": "Expense added successfully!"
-        }
+
+    query = """
+    INSERT INTO expenses
+    (date, category, amount, payment_method, description)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+
+    values = (date, category, amount, payment_method, description)
+
+    cursor_obj.execute(query, values)
+    conn_obj.commit()
+
+    return {"message": "Expense added successfully!"}
 # ---------------- VIEW EXPENSES ----------------
 @app.get("/view_expenses")
 def view_expenses():
@@ -241,7 +237,6 @@ def generate_report(report_type: str):
         "expenses": expenses
     }
 
-#------------------ Analyze Spending ----------------
 # ---------------- ANALYZE SPENDING ----------------
 @app.get("/analyze_spending")
 def analyze_spending():
