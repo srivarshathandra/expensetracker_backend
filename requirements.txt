@@ -1,4 +1,4 @@
 fastapi
 uvicorn
-mysql-connector-python
-os
+pandas
+streamlit
